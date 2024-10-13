@@ -1,0 +1,45 @@
+create TABLE user_(
+  id SERIAL PRIMARY KEY,
+  first_name VARCHAR(255) NOT NULL,
+  last_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  avatar VARCHAR(255) DEFAULT NULL,
+  password VARCHAR(255) NOT NULL
+);
+
+create TABLE post(
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description VARCHAR(255) DEFAULT '',
+  photos VARCHAR(255)[] DEFAULT '{}',
+  user_id INTEGER,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES user_(id)
+);
+
+create TABLE comment(
+  id SERIAL PRIMARY KEY,
+  body VARCHAR(255) NOT NULL,
+  user_id INTEGER,
+  post_id INTEGER,
+  FOREIGN KEY (user_id) REFERENCES user_(id),
+  FOREIGN KEY (post_id) REFERENCES post(id)
+);
+
+create TABLE file(
+  id SERIAL PRIMARY KEY,
+  path VARCHAR(255) NOT NULL,
+  post_id INTEGER,
+  FOREIGN KEY (post_id) REFERENCES post(id)
+);
+
+CREATE TABLE post_likes (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER,
+  post_id INTEGER,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES user_(id) ON DELETE CASCADE,
+  FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE CASCADE,
+  UNIQUE (user_id, post_id)
+);
